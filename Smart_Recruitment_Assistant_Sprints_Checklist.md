@@ -1,4 +1,4 @@
-# Smart Recruitment Assistant — AI Screening System
+git statusgit ls-files "*Smart_Recruitment_Assistant*.ipynb"# Smart Recruitment Assistant — AI Screening System
 ### خطة الـ Sprints الكاملة (3 أيام تقريبًا) — v1.1 (Notebook مشترك)
 
 **الفكرة:** نظام ذكي يساعد الـ HR يقرر هل الـ Candidate يستاهل ينتقل للمرحلة الجاية في التوظيف ولا لأ، بالاعتماد على بيانات المتقدم (تعليم، خبرة، تدريب...)، مع Dashboard يوضح إحصائيات وأهم العوامل المؤثرة في القرار، ونظام Ranking اختياري لأفضل 10 مرشحين.
