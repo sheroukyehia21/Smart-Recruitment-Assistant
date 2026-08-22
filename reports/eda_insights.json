@@ -1,0 +1,58 @@
+{
+  "target_distribution": {
+    "0.0": 14381,
+    "1.0": 4777
+  },
+  "target_percentages": {
+    "0.0": 75.07,
+    "1.0": 24.93
+  },
+  "selected_model": "HistGradientBoosting",
+  "selection_rule": "Highest mean of Recall, F1, Balanced Accuracy, and ROC-AUC.",
+  "test_record_count": 3832,
+  "test_predicted_job_change_count": 1297,
+  "test_predicted_job_change_percentage": 33.85,
+  "education_distribution": {
+    "Graduate": 11598,
+    "Masters": 4361,
+    "High School": 2017,
+    "Unknown": 460,
+    "Phd": 414,
+    "Primary School": 308
+  },
+  "experience_distribution": {
+    ">20": 3286,
+    "5": 1430,
+    "4": 1403,
+    "3": 1354,
+    "6": 1216,
+    "2": 1127,
+    "7": 1028,
+    "10": 985,
+    "9": 980,
+    "8": 802,
+    "15": 686,
+    "11": 664,
+    "14": 586,
+    "1": 549,
+    "<1": 522,
+    "16": 508,
+    "12": 494,
+    "13": 399,
+    "17": 342,
+    "19": 304,
+    "18": 280,
+    "20": 148,
+    "Unknown": 65
+  },
+  "training_hours_summary": {
+    "count": 19158.0,
+    "mean": 65.37,
+    "std": 60.06,
+    "min": 1.0,
+    "25%": 23.0,
+    "50%": 47.0,
+    "75%": 88.0,
+    "max": 336.0
+  }
+}

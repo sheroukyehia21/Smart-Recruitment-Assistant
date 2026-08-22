@@ -1,0 +1,11 @@
+enrollee_id,Prediction,Confidence,relevent_experience,education_level,experience,company_size,last_new_job,training_hours
+7181,1,0.858789454567945,No relevent experience,Graduate,1,,1,48
+30204,1,0.8521864603542844,No relevent experience,Graduate,4,,1,52
+4324,1,0.8476743541393829,No relevent experience,Graduate,5,,1,24
+11427,1,0.8476743541393829,No relevent experience,Graduate,5,,1,119
+18148,1,0.8469759714807534,No relevent experience,Graduate,2,,1,43
+28213,1,0.846568353874254,No relevent experience,Graduate,2,,1,50
+4313,1,0.8453463761578804,No relevent experience,Graduate,1,,1,52
+14939,1,0.8408828240944509,Has relevent experience,Graduate,11,,1,150
+13527,1,0.8406978076732593,No relevent experience,Graduate,2,,1,48
+9022,1,0.8372895600138008,No relevent experience,Graduate,1,,1,42
