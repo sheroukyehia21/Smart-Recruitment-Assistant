@@ -1,189 +1,264 @@
-# Smart Recruitment Assistant
+# 💳 Credit Card Fraud Detection — Deep Learning Ensemble
 
-## 1. Project Overview
+A deep learning system for detecting fraudulent credit card transactions using **MLP, Autoencoder, and Stacking Ensemble** techniques.
 
-Smart Recruitment Assistant is an AI-powered recruitment screening system. It helps HR teams analyze candidate information and estimate whether a candidate is likely to be looking for a job change. The project combines reproducible preprocessing, supervised machine learning, saved reports, and an interactive Streamlit dashboard.
+The project combines supervised classification with unsupervised anomaly detection to produce a final fraud prediction.
 
-## 2. Problem Statement
+## 🚀 Live Demo
 
-Recruitment teams may need to review many candidate profiles while trying to identify people who are likely to be open to a job change. Automated screening can help prioritize profiles consistently and surface useful patterns for review. The model is a decision-support tool; it does not replace recruiter judgment.
+[Open the Streamlit App](https://credit-card-fraud-detection-dl-k7cuk4qxhxbpklotlcmurp.streamlit.app/)
 
-## 3. Project Objectives
+---
 
-- Candidate screening using binary classification.
-- Recruitment analytics and candidate distributions.
-- Machine-learning prediction and confidence estimation.
-- Ranking of the highest-confidence test-set records.
-- Explainable model insights through coefficients and feature importance.
-- An interactive Streamlit dashboard for HR-oriented review.
+## 🧠 Project Overview
 
-## 4. Dataset
+The system uses three main components:
 
-The project uses the HR Analytics Job Change dataset files stored in `data/`: `aug_train.csv`, `aug_test.csv`, and `sample_submission.csv`. The repository documentation identifies this as the public HR Analytics Job Change dataset; no external source URL is stored in the project.
+### 1. MLP — Supervised Classification
 
-The available files contain:
+A Multi-Layer Perceptron trained to classify transactions as fraudulent or legitimate.
 
-- `aug_train.csv`: 19,158 records and the binary `target` column.
-- `aug_test.csv`: 2,129 records without the target column.
-- `sample_submission.csv`: submission-format example data.
+* Dense layers: `128 → 64 → 32 → 16`
+* ReLU activation
+* Dropout regularization
+* Adam optimizer
+* SMOTE for class imbalance
+* Early stopping
+* Fraud probability output
 
-Main feature categories are candidate and location information, education and experience, company information, and training activity. The original dataset column names are preserved for compatibility.
+### 2. Autoencoder — Anomaly Detection
 
-The target is `target`:
+The Autoencoder is trained using **legitimate transactions only**.
 
-- `0`: Not Looking for Job Change
-- `1`: Looking for Job Change
+It learns the normal transaction pattern and uses reconstruction error to identify unusual transactions.
 
-The training target distribution is approximately 75.07% class 0 and 24.93% class 1.
+* Gaussian Noise
+* Encoder/Decoder architecture
+* L2 regularization
+* RobustScaler
+* Early stopping
+* Weighted reconstruction error
 
-## 5. Data Preprocessing
+### 3. Stacking Ensemble
 
-Preprocessing is implemented by `RecruitmentPreprocessor` in `app/modeling.py` and saved as `models/preprocessing_pipeline.pkl`. The same fitted artifact is loaded by the Streamlit application.
-
-The implemented process is:
-
-1. Convert `experience`: `<1` becomes `0`, `>20` becomes `21`, numeric strings become numeric values, and invalid or missing values become missing numeric values.
-2. Impute `city_development_index`, `training_hours`, and converted `experience` with medians fitted on the training data only.
-3. Impute categorical features with the literal value `Unknown`.
-4. Apply explicit ordinal mappings to `education_level`, `company_size`, and `last_new_job`. Unknown or unmapped values become `-1`.
-5. Frequency-encode `city` using frequencies learned from training data only. Unseen cities receive frequency `0`.
-6. One-hot encode `gender`, `relevent_experience`, `enrolled_university`, `major_discipline`, and `company_type`. Unknown categories are ignored safely.
-7. Scale city frequency, city development index, training hours, and experience with `StandardScaler` fitted on training data only.
-8. Use an 80% training and 20% holdout split with `random_state=42` and `stratify=y`.
-
-## 6. Machine Learning Models
-
-- **Logistic Regression:** an interpretable linear classification baseline with directional coefficients.
-- **Random Forest:** a decision-tree ensemble for nonlinear relationships with native tree importance.
-- **ExtraTrees:** a randomized tree ensemble used as an additional tabular classification candidate.
-- **HistGradientBoosting:** a gradient-boosted tree model selected for its overall held-out performance.
-
-Because the target is imbalanced, Logistic Regression, Random Forest, and ExtraTrees use `class_weight="balanced"`. HistGradientBoosting uses balanced training sample weights.
-
-## 7. Model Evaluation
-
-These are the latest measured results from `reports/model_comparison.csv`, calculated on the fixed stratified holdout test split:
-
-| Model | Accuracy | Precision | Recall | F1 | Balanced Accuracy | ROC-AUC | Selection Score |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Logistic Regression | 75.08% | 50.00% | 78.12% | 60.97% | 76.09% | 80.28% | 73.86% |
-| Random Forest | 78.16% | 57.62% | 46.70% | 51.59% | 67.65% | 80.03% | 61.49% |
-| ExtraTrees | 78.55% | 55.18% | 74.14% | 63.27% | 77.08% | 80.23% | 73.68% |
-| HistGradientBoosting | **79.44%** | 56.44% | 76.65% | **65.01%** | **78.51%** | **82.05%** | **75.55%** |
-
-The selected model is **HistGradientBoosting**. The selection score is the mean of Recall, F1, Balanced Accuracy, and ROC-AUC, so screening quality and class-imbalance behavior are considered alongside Accuracy. Accuracy above 90% has not been achieved legitimately on the current holdout data.
-
-## 8. Dashboard Features
-
-The Streamlit application in `app/app.py` provides five sections:
-
-- **Candidate Prediction:** enter a candidate profile and receive a screening prediction and confidence value.
-- **Recruitment Dashboard:** review KPIs, model quality, candidate distributions, and feature importance.
-- **Top Candidates:** inspect the top 10 test-set records ranked by selected-model confidence.
-- **Model Insights:** review model metrics, Logistic Regression coefficients, and selected-model feature importance.
-- **About Project:** read the project purpose, data, preprocessing, models, and limitations.
-
-## 9. Candidate Prediction
-
-Users enter candidate information through categorical selectors and bounded numerical controls. The record is passed through the saved preprocessing artifact and selected model. The application displays the predicted class, probability-based confidence, and a short screening explanation.
-
-## 10. Explainability
-
-- `reports/logistic_coefficients.csv` contains Logistic Regression coefficients and absolute coefficient values. Positive coefficients increase estimated class-1 likelihood; negative coefficients decrease it.
-- `reports/feature_importance.csv` contains selected-model importance. HistGradientBoosting uses permutation importance measured with ROC-AUC because it has no native `feature_importances_` attribute.
-- `reports/model_comparison.csv` contains the common evaluation table and selection score.
-
-These outputs describe model behavior in this dataset and should not be interpreted as causal conclusions.
-
-## 11. Project Structure
+The MLP probability and Autoencoder anomaly score are combined using a **Logistic Regression meta-model**.
 
 ```text
-.
-├── app/
-│   ├── app.py
-│   └── modeling.py
-├── data/
-│   ├── aug_train.csv
-│   ├── aug_test.csv
-│   └── sample_submission.csv
-├── models/
-│   ├── extra_trees.pkl
-│   ├── hist_gradient_boosting.pkl
-│   ├── logistic_regression.pkl
-│   ├── preprocessing_pipeline.pkl
-│   └── random_forest.pkl
-├── notebooks/
-│   └── Smart_Recruitment_Assistant_Final.ipynb
-├── reports/
-│   ├── eda_insights.json
-│   ├── feature_importance.csv
-│   ├── logistic_coefficients.csv
-│   ├── model_comparison.csv
-│   └── top_candidates.csv
-├── screenshots/
-├── .gitignore
+MLP Probability
+       +
+Autoencoder Score
+       ↓
+Meta Scaler
+       ↓
+Logistic Regression
+       ↓
+Final Fraud Probability
+       ↓
+FRAUD / LEGITIMATE
+```
+
+---
+
+## ⚙️ Preprocessing
+
+The dataset preprocessing includes:
+
+* Duplicate removal
+* Converting `Time` into `Hour`
+* Log transformation of `Amount`
+* Stratified train / validation / test split
+* StandardScaler for the MLP
+* RobustScaler for the Autoencoder
+* SMOTE applied only to the MLP training data
+
+### Final Features
+
+The deployed models expect exactly **30 features**:
+
+```text
+V1 ... V28
+Amount
+Hour
+```
+
+The exact feature order is stored in:
+
+```text
+feature_columns.pkl
+```
+
+---
+
+## 🎯 Threshold Optimization
+
+Fraud detection is a highly imbalanced classification problem, so accuracy alone is not sufficient.
+
+Separate decision thresholds were selected using the validation set:
+
+* **MLP:** threshold optimized for Recall
+* **Autoencoder:** threshold optimized using F2-score
+* **Ensemble:** threshold optimized using F2-score
+
+This helps the system focus on detecting fraudulent transactions.
+
+---
+
+## 🖥️ Streamlit Application
+
+The deployed application allows users to enter:
+
+* Transaction Amount
+* Transaction Hour
+* `V1`–`V28` anonymized features
+
+The app returns:
+
+* MLP fraud probability
+* Autoencoder anomaly score
+* Ensemble fraud probability
+* Individual model predictions
+* Final `FRAUD` / `LEGITIMATE` decision
+* Model thresholds
+
+The application performs **inference only**.
+
+It does not retrain the models or require the original dataset.
+
+---
+
+## 📊 Model Pipeline
+
+```text
+                    Transaction
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+              ▼                     ▼
+       StandardScaler         RobustScaler
+              │                     │
+              ▼                     ▼
+             MLP              Autoencoder
+              │                     │
+              ▼                     ▼
+       Fraud Probability      Anomaly Score
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                Logistic Regression
+                  Meta-Model
+                         │
+                         ▼
+                 Final Prediction
+```
+
+---
+
+## 🛠️ Technologies
+
+* **Python**
+* **TensorFlow / Keras**
+* **Scikit-learn**
+* **Pandas**
+* **NumPy**
+* **imbalanced-learn / SMOTE**
+* **Joblib**
+* **Streamlit**
+* **Git & GitHub**
+
+---
+
+## 📁 Project Structure
+
+```text
+credit-card-fraud-detection-dl/
+│
+├── app.py
 ├── README.md
 ├── requirements.txt
-└── Smart_Recruitment_Assistant_Sprints_Checklist.md
+├── .gitignore
+│
+├── Credit_Card_Fraud_Full_Pipeline_v7_Tuned__1_.ipynb
+│
+├── mlp_model.keras
+├── autoencoder_model.keras
+│
+├── scaler.pkl
+├── autoencoder_scaler.pkl
+├── autoencoder_feature_weights.pkl
+│
+├── ensemble_meta_scaler.pkl
+├── ensemble_meta_model.pkl
+│
+├── mlp_threshold.pkl
+├── autoencoder_threshold.pkl
+├── ensemble_threshold.pkl
+│
+└── feature_columns.pkl
 ```
 
-The `screenshots/` directory currently exists but contains no screenshots.
+> The original `creditcard.csv` dataset is excluded from the repository.
 
-## 12. Installation
+---
 
-From the project root in Windows PowerShell:
+## ▶️ Run Locally
 
-```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-py -3 -m pip install -r requirements.txt
+Clone the repository:
+
+```bash
+git clone https://github.com/sheroukyehia21/credit-card-fraud-detection-dl.git
+cd credit-card-fraud-detection-dl
 ```
 
-## 13. Running the Application
+Install the required dependencies:
 
-From the project root:
-
-```powershell
-py -3 -m streamlit run app\app.py
+```bash
+pip install -r requirements.txt
 ```
 
-Streamlit normally displays `http://localhost:8501`. This localhost address is for local testing on the current computer and is not a public deployment URL.
+Run the application:
 
-## 14. Deployment
+```bash
+streamlit run app.py
+```
 
-The application can later be deployed publicly with Streamlit Community Cloud after repository, data availability, dependency, and security requirements have been reviewed. This project has not been deployed.
+---
 
-## 15. Technologies
+## 🔒 Data Privacy
 
-- Python
-- Pandas
-- NumPy
-- Scikit-learn
-- Joblib
-- Streamlit
-- Matplotlib
-- Seaborn
-- Jupyter
+The original `creditcard.csv` dataset is **not uploaded to GitHub**.
 
-## 16. Limitations
+The Streamlit application uses only the saved:
 
-- The current best holdout accuracy is 79.44%, below 90%.
-- Results depend on the quality, coverage, and historical nature of the dataset.
-- Model confidence is not a guarantee of candidate behavior.
-- Predictions should support HR decisions rather than replace human judgment.
-- Feature explanations indicate predictive contribution, not causation.
-- The Top Candidates report ranks test-set records and does not establish identities beyond the available dataset identifier.
+* Models
+* Scalers
+* Feature configuration
+* Thresholds
+* Ensemble artifacts
 
-## 17. Future Improvements
+Therefore, the deployed application does not need access to the original dataset.
 
-- Develop and validate additional meaningful feature engineering.
-- Perform broader hyperparameter optimization with training-only cross-validation.
-- Evaluate additional tabular models when their dependencies are appropriate.
-- Add stronger explainability and subgroup performance analysis.
-- Add repeated validation and probability calibration.
-- Deploy publicly after operational review.
-- Add authentication, authorization, and security controls if sensitive data is handled.
+---
 
-## 18. Screenshots
+## 🎓 Project Objective
 
-The `screenshots/` directory exists but is currently empty. No screenshot filenames are referenced because no screenshots are stored in the project.
+This project demonstrates a complete Deep Learning workflow for fraud detection:
+
+```text
+Data Preprocessing
+       ↓
+Feature Engineering
+       ↓
+MLP Training
+       ↓
+Autoencoder Training
+       ↓
+Model Stacking
+       ↓
+Threshold Optimization
+       ↓
+Model Serialization
+       ↓
+Streamlit Deployment
+```
+
+The project focuses on combining **classification and anomaly detection** into a single deployed fraud detection system.
