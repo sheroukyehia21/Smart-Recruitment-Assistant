@@ -1,264 +1,352 @@
-# 💳 Credit Card Fraud Detection — Deep Learning Ensemble
+# 🤖 Smart Recruitment Assistant — AI Screening System
 
-A deep learning system for detecting fraudulent credit card transactions using **MLP, Autoencoder, and Stacking Ensemble** techniques.
+## 📌 Project Overview
 
-The project combines supervised classification with unsupervised anomaly detection to produce a final fraud prediction.
+**Smart Recruitment Assistant** is an AI-powered recruitment screening system designed to help HR teams evaluate job candidates and decide whether a candidate should move to the next stage of the hiring process.
 
-## 🚀 Live Demo
+The system uses candidate information such as **education, experience, training, employment history, and other relevant features** to predict the candidate's suitability.
 
-[Open the Streamlit App](https://credit-card-fraud-detection-dl-k7cuk4qxhxbpklotlcmurp.streamlit.app/)
+The project also provides:
 
----
-
-## 🧠 Project Overview
-
-The system uses three main components:
-
-### 1. MLP — Supervised Classification
-
-A Multi-Layer Perceptron trained to classify transactions as fraudulent or legitimate.
-
-* Dense layers: `128 → 64 → 32 → 16`
-* ReLU activation
-* Dropout regularization
-* Adam optimizer
-* SMOTE for class imbalance
-* Early stopping
-* Fraud probability output
-
-### 2. Autoencoder — Anomaly Detection
-
-The Autoencoder is trained using **legitimate transactions only**.
-
-It learns the normal transaction pattern and uses reconstruction error to identify unusual transactions.
-
-* Gaussian Noise
-* Encoder/Decoder architecture
-* L2 regularization
-* RobustScaler
-* Early stopping
-* Weighted reconstruction error
-
-### 3. Stacking Ensemble
-
-The MLP probability and Autoencoder anomaly score are combined using a **Logistic Regression meta-model**.
-
-```text
-MLP Probability
-       +
-Autoencoder Score
-       ↓
-Meta Scaler
-       ↓
-Logistic Regression
-       ↓
-Final Fraud Probability
-       ↓
-FRAUD / LEGITIMATE
-```
+* 📊 Exploratory Data Analysis (EDA)
+* 🤖 Multiple Machine Learning Models
+* 📈 Model Performance Comparison
+* 🔍 Feature Importance & Insights
+* 🎯 Candidate Prediction with Confidence Score
+* 🏆 Optional Top-10 Candidate Ranking
+* 📊 Interactive Streamlit Dashboard
 
 ---
 
-## ⚙️ Preprocessing
+## 🎯 Project Objectives
 
-The dataset preprocessing includes:
+The main objectives of this project are to:
 
-* Duplicate removal
-* Converting `Time` into `Hour`
-* Log transformation of `Amount`
-* Stratified train / validation / test split
-* StandardScaler for the MLP
-* RobustScaler for the Autoencoder
-* SMOTE applied only to the MLP training data
-
-### Final Features
-
-The deployed models expect exactly **30 features**:
-
-```text
-V1 ... V28
-Amount
-Hour
-```
-
-The exact feature order is stored in:
-
-```text
-feature_columns.pkl
-```
+1. Clean and preprocess recruitment data.
+2. Explore candidate characteristics and identify useful patterns.
+3. Build Machine Learning models for candidate screening.
+4. Compare different models using standard evaluation metrics.
+5. Identify the most important factors affecting recruitment predictions.
+6. Provide an easy-to-use interface for HR users.
+7. Help HR teams make faster and more data-driven screening decisions.
 
 ---
 
-## 🎯 Threshold Optimization
+## 🛠️ Tech Stack
 
-Fraud detection is a highly imbalanced classification problem, so accuracy alone is not sufficient.
-
-Separate decision thresholds were selected using the validation set:
-
-* **MLP:** threshold optimized for Recall
-* **Autoencoder:** threshold optimized using F2-score
-* **Ensemble:** threshold optimized using F2-score
-
-This helps the system focus on detecting fraudulent transactions.
-
----
-
-## 🖥️ Streamlit Application
-
-The deployed application allows users to enter:
-
-* Transaction Amount
-* Transaction Hour
-* `V1`–`V28` anonymized features
-
-The app returns:
-
-* MLP fraud probability
-* Autoencoder anomaly score
-* Ensemble fraud probability
-* Individual model predictions
-* Final `FRAUD` / `LEGITIMATE` decision
-* Model thresholds
-
-The application performs **inference only**.
-
-It does not retrain the models or require the original dataset.
-
----
-
-## 📊 Model Pipeline
-
-```text
-                    Transaction
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-              ▼                     ▼
-       StandardScaler         RobustScaler
-              │                     │
-              ▼                     ▼
-             MLP              Autoencoder
-              │                     │
-              ▼                     ▼
-       Fraud Probability      Anomaly Score
-              │                     │
-              └──────────┬──────────┘
-                         ▼
-                Logistic Regression
-                  Meta-Model
-                         │
-                         ▼
-                 Final Prediction
-```
-
----
-
-## 🛠️ Technologies
+The project was developed using:
 
 * **Python**
-* **TensorFlow / Keras**
-* **Scikit-learn**
-* **Pandas**
-* **NumPy**
-* **imbalanced-learn / SMOTE**
-* **Joblib**
-* **Streamlit**
-* **Git & GitHub**
+* **Pandas** — Data manipulation and analysis
+* **NumPy** — Numerical operations
+* **Scikit-learn** — Machine Learning and preprocessing
+* **Matplotlib** — Data visualization
+* **Seaborn** — Statistical visualization
+* **Joblib / Pickle** — Model saving and loading
+* **Jupyter Notebook / Google Colab** — Development and experimentation
+* **Streamlit** — Interactive web application
+* **Git & GitHub** — Version control and team collaboration
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
-credit-card-fraud-detection-dl/
+smart-recruitment-assistant/
 │
-├── app.py
-├── README.md
+├── data/
+│   └── aug_train.csv
+│
+├── Smart_Recruitment_Assistant.ipynb
+│
+├── models/
+│   ├── logistic_regression.pkl
+│   └── random_forest.pkl
+│
+├── app/
+│   └── app.py
+│
+├── reports/
+│   └── performance_comparison.md
+│
 ├── requirements.txt
-├── .gitignore
 │
-├── Credit_Card_Fraud_Full_Pipeline_v7_Tuned__1_.ipynb
-│
-├── mlp_model.keras
-├── autoencoder_model.keras
-│
-├── scaler.pkl
-├── autoencoder_scaler.pkl
-├── autoencoder_feature_weights.pkl
-│
-├── ensemble_meta_scaler.pkl
-├── ensemble_meta_model.pkl
-│
-├── mlp_threshold.pkl
-├── autoencoder_threshold.pkl
-├── ensemble_threshold.pkl
-│
-└── feature_columns.pkl
+└── README.md
 ```
-
-> The original `creditcard.csv` dataset is excluded from the repository.
 
 ---
 
-## ▶️ Run Locally
+## 📓 Notebook Structure
 
-Clone the repository:
+The main notebook is divided into several sections:
 
-```bash
-git clone https://github.com/sheroukyehia21/credit-card-fraud-detection-dl.git
-cd credit-card-fraud-detection-dl
+### Section 0 — Setup
+
+Importing the required Python libraries and preparing the project environment.
+
+### Section 1 — Data Understanding
+
+Initial exploration of the dataset using:
+
+* `info()`
+* `describe()`
+* `isnull().sum()`
+* Target variable analysis
+
+### Section 2 — Data Cleaning & Preprocessing
+
+The preprocessing stage includes:
+
+* Handling missing values
+* Encoding categorical features
+* Feature engineering
+* Feature scaling
+* Train/Test splitting
+* Handling class imbalance when necessary
+
+The final output of this section is:
+
+```text
+X_train
+X_test
+y_train
+y_test
 ```
 
-Install the required dependencies:
+These datasets are used by the Machine Learning models.
+
+### Section 3 — Exploratory Data Analysis
+
+EDA is used to understand the candidate data through:
+
+* Target distribution
+* Feature vs. target relationships
+* Correlation analysis
+* Candidate education distribution
+* Experience distribution
+* Training-hours distribution
+* Visualizations and statistical insights
+
+---
+
+## 🤖 Machine Learning Models
+
+### 1. Logistic Regression
+
+Logistic Regression is used as one of the baseline classification models.
+
+The model is evaluated using:
+
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* Confusion Matrix
+
+The trained model is saved as:
+
+```text
+models/logistic_regression.pkl
+```
+
+---
+
+### 2. Random Forest
+
+Random Forest is used as a second classification model to provide a more flexible approach to candidate screening.
+
+The model is evaluated using the same metrics:
+
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* Confusion Matrix
+
+Feature importance is also extracted to identify the factors that contribute most to the model's decisions.
+
+The trained model is saved as:
+
+```text
+models/random_forest.pkl
+```
+
+---
+
+## 📊 Model Comparison
+
+The Logistic Regression and Random Forest models are compared using the same test dataset.
+
+The comparison includes:
+
+| Metric    | Logistic Regression | Random Forest |
+| --------- | ------------------: | ------------: |
+| Accuracy  |                   — |             — |
+| Precision |                   — |             — |
+| Recall    |                   — |             — |
+| F1 Score  |                   — |             — |
+
+The final model used by the application is selected based on the overall evaluation results, with particular attention to the metrics that are most important for recruitment screening.
+
+---
+
+## 🔍 Candidate Screening
+
+The application allows an HR user to enter candidate information through a simple interface.
+
+The system then:
+
+```text
+Candidate Information
+        ↓
+Preprocessing
+        ↓
+Trained ML Model
+        ↓
+Prediction
+        ↓
+Confidence Score
+```
+
+The prediction produces one of two outcomes:
+
+### 🟢 Recommended
+
+The candidate is predicted to be suitable for moving to the next recruitment stage.
+
+### 🔴 Not Recommended
+
+The candidate is predicted not to meet the model's screening criteria for the next stage.
+
+The application also displays a confidence score for the prediction.
+
+---
+
+## 🏆 Top-10 Candidate Ranking
+
+As an optional feature, the system can rank candidates according to their prediction probability.
+
+The system uses:
+
+```python
+predict_proba()
+```
+
+to obtain prediction probabilities and can then display the **Top 10 candidates** with the highest predicted suitability.
+
+---
+
+## 📊 Dashboard
+
+The Streamlit dashboard provides HR users with useful insights such as:
+
+* Candidate statistics
+* Target distribution
+* Important candidate features
+* Model performance
+* Feature importance
+* Recruitment insights
+* Optional Top-10 candidate ranking
+
+---
+
+## 🚀 Running the Project
+
+### 1. Clone the Repository
+
+```bash
+git clone <REPOSITORY_URL>
+cd smart-recruitment-assistant
+```
+
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the application:
+### 3. Run the Streamlit Application
 
 ```bash
-streamlit run app.py
+streamlit run app/app.py
 ```
 
----
-
-## 🔒 Data Privacy
-
-The original `creditcard.csv` dataset is **not uploaded to GitHub**.
-
-The Streamlit application uses only the saved:
-
-* Models
-* Scalers
-* Feature configuration
-* Thresholds
-* Ensemble artifacts
-
-Therefore, the deployed application does not need access to the original dataset.
+The application will open in your browser.
 
 ---
 
-## 🎓 Project Objective
+## 📦 Requirements
 
-This project demonstrates a complete Deep Learning workflow for fraud detection:
+The main dependencies include:
 
 ```text
-Data Preprocessing
-       ↓
-Feature Engineering
-       ↓
-MLP Training
-       ↓
-Autoencoder Training
-       ↓
-Model Stacking
-       ↓
-Threshold Optimization
-       ↓
-Model Serialization
-       ↓
-Streamlit Deployment
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+joblib
+streamlit
 ```
 
-The project focuses on combining **classification and anomaly detection** into a single deployed fraud detection system.
+---
+
+
+
+
+## ⚠️ Important Note
+
+The Streamlit application must apply **exactly the same preprocessing steps** used during model training.
+
+This includes:
+
+* Categorical encoding
+* Feature engineering
+* Feature scaling
+* Feature order
+
+Using different preprocessing during prediction may lead to incorrect model results.
+
+---
+
+## 🔮 Future Improvements
+
+Possible future improvements include:
+
+* Deploying the application online
+* Adding more Machine Learning models
+* Improving candidate ranking
+* Adding explainable AI features
+* Adding authentication for HR users
+* Connecting the system to a recruitment database
+* Adding CV/Resume parsing
+* Integrating Natural Language Processing (NLP)
+* Adding automated candidate recommendations
+
+---
+
+## 📄 Project Deliverables
+
+The final project includes:
+
+* ✅ Candidate Screening Models
+* ✅ Logistic Regression Model
+* ✅ Random Forest Model
+* ✅ Model Performance Comparison
+* ✅ Recruitment Dashboard
+* ✅ Candidate Prediction Interface
+* ✅ Confidence Score
+* ✅ Feature Importance Insights
+* ✅ Saved ML Models
+* ✅ Streamlit Application
+* ✅ Project Documentation
+* ⭐ Optional Top-10 Candidate Ranking
+* ⭐ Optional Streamlit Deployment
+
+---
+
+## 👩‍💻 Project Status
+
+**Status:** In Development
+
+This project was developed as a collaborative Machine Learning and Data Science project focusing on automated recruitment screening and data-driven candidate evaluation.
