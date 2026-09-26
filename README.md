@@ -2,9 +2,13 @@
 
 ## 📌 Overview
 
+🚀 **Live Demo:** [Open the Streamlit App](https://smart-recruitment-assistant-hqqtcwyajd86f2bgf6lbhn.streamlit.app/)
+📊 **Dataset:** [HR Analytics Job Change of Data Scientists – Kaggle](https://www.kaggle.com/datasets/arashnic/hr-analytics-job-change-of-data-scientists)
+
 Smart Recruitment Assistant is an AI-powered candidate screening tool built for HR teams. It takes candidate information (education, experience, company background, training activity, etc.) and predicts how likely a candidate is to be looking for a job change, using a supervised machine-learning classifier trained on the HR Analytics Job Change dataset.
 
 The project is meant as a decision-support tool for recruiters — it surfaces a prediction and a confidence score to help prioritize review, not to replace recruiter judgment. The core AI component is a binary classification pipeline (four candidate models were trained and compared), wrapped in an interactive Streamlit dashboard.
+
 
 ## 🎯 Objectives
 
