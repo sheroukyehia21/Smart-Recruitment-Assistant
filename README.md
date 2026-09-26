@@ -214,7 +214,4 @@ This was a collaborative project. The repository's own sprint-planning document 
 - Training/analysis notebook(s) (`Notebooks/`).
 - Technical documentation (`Smart_Recruitment_Assistant_Technical_Documentation.docx`) and sprint checklist (`Smart_Recruitment_Assistant_Sprints_Checklist.md`).
 - Raw dataset archive (`hr analytics.zip`).
-
-## 📜 License
-
 No license file was found in the repository, so no license is stated here. Add one (e.g., MIT) if you intend this project to be reused by others.
